@@ -1,5 +1,7 @@
 # indeed-php
 
+
+
 A client library for using the Indeed Jobsearch API
 
 ### API Credentials
