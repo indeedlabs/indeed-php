@@ -1,5 +1,7 @@
 <?php
 
+
+
 class Indeed{
 
     const DEFAULT_FORMAT = "json";
