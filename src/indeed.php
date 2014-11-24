@@ -15,11 +15,20 @@ class Indeed{
     }
 
     public function search($args){
-        return $this->process_request(self::API_SEARCH_ENDPOINT, $this->validate_args(self::$API_SEARCH_REQUIRED, $args));
+        $valid_args = $this->validate_args(self::$API_SEARCH_REQUIRED, $args);
+        if (!is_array($valid_args)) {
+            return $valid_args;
+        }
+
+        return $this->process_request(self::API_SEARCH_ENDPOINT, $valid_args);
     }
 
     public function jobs($args){
         $valid_args = $this->validate_args(self::$API_JOBS_REQUIRED, $args);
+        if (!is_array($valid_args)) {
+            return $valid_args;
+        }
+
         $valid_args["jobkeys"] = implode(",", $valid_args['jobkeys']);
         return $this->process_request(self::API_JOBS_ENDPOINT, $valid_args);
     }
@@ -49,10 +58,11 @@ class Indeed{
                     }
                 }
                 if(!$has_one_required){
-                    throw new Exception(sprintf("You must provide one of the following %s", implode(",", $field)));
+                    $error = sprintf("You must provide one of the following %s", implode(",", $field));
+                    return $error;
                 }
             } elseif(!array_key_exists($field, $args)){
-                throw new Exception("The field $field is required");
+                return "The field $field is required";
             }
         }
         return $args;
