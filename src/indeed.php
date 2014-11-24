@@ -1,6 +1,6 @@
 <?php
 
-class Indeed{
+class Indeed {
 
     const DEFAULT_FORMAT = "json";
     const API_SEARCH_ENDPOINT = "http://api.indeed.com/ads/apisearch";
@@ -9,9 +9,10 @@ class Indeed{
     private static $API_SEARCH_REQUIRED = array("userip", "useragent", array("q", "l"));
     private static $API_JOBS_REQUIRED = array("jobkeys");
 
-    public function __construct($publisher, $version = "2"){
+    public function __construct($publisher, $version = "2", $timeout = 5){
         $this->publisher = $publisher;
         $this->version = $version;
+	$this->timeout = $timeout;
     }
 
     public function search($args){
@@ -32,6 +33,8 @@ class Indeed{
         $args["format"] = $format;
         $c = curl_init(sprintf("%s?%s", $endpoint, http_build_query($args)));
         curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        curl_setopt($c, CURLOPT_TIMEOUT, $this->timeout);
         $result = curl_exec($c);
         curl_close($c);
         $r = (!$raw ? json_decode($result, $assoc = true) : $result);
